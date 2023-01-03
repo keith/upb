@@ -33,6 +33,7 @@ load(
     "upb_proto_library",
     "upb_proto_reflection_library",
 )
+load("//bazel:proto_common_polyfill.bzl", "proto_lang_toolchain")
 
 licenses(["notice"])
 
@@ -196,6 +197,16 @@ cc_binary(
     ],
 )
 
+proto_lang_toolchain(
+    name = "protoc-gen-upb_toolchain",
+    command_line = "--upb_out=%s",
+    plugin = ":protoc-gen-upb",
+    plugin_format_flag = "--plugin=protoc-gen-upb=%s",
+    progress_message = "Generating upb protos",
+    runtime = "//:generated_code_support__only_for_generated_code_do_not_use__i_give_permission_to_break_me",
+    visibility = ["//visibility:public"],
+)
+
 cc_binary(
     name = "protoc-gen-upbdefs",
     srcs = [
@@ -208,6 +219,16 @@ cc_binary(
         "@com_google_protobuf//:protobuf",
         "@com_google_protobuf//src/google/protobuf/compiler:code_generator",
     ],
+)
+
+proto_lang_toolchain(
+    name = "protoc-gen-upbdefs_toolchain",
+    command_line = "--upbdefs_out=%s",
+    plugin = ":protoc-gen-upbdefs",
+    plugin_format_flag = "--plugin=protoc-gen-upbdefs=%s",
+    progress_message = "Generating upb protos",
+    runtime = "//:generated_reflection_support__only_for_generated_code_do_not_use__i_give_permission_to_break_me",
+    visibility = ["//visibility:public"],
 )
 
 cc_binary(
